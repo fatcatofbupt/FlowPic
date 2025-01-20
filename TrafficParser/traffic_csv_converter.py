@@ -13,7 +13,7 @@ import re
 FLAGS = None
 INPUT = "../raw_csvs/classes/browsing/reg/CICNTTor_browsing.raw.csv"#"../dataset/iscxNTVPN2016/CompletePCAPs" # ""
 INPUT_DIR = "../raw_csvs/classes/chat/vpn/"
-CLASSES_DIR = "../raw_csvs/classes/**/**/"
+CLASSES_DIR = "../data/classes_csvs/**/**/"
 
 # LABEL_IND = 1
 TPS = 60 # TimePerSession in secs
@@ -147,7 +147,7 @@ def traffic_csv_converter_splitted(file_path):
 
 def traffic_class_converter(dir_path):
     dataset_tuple = ()
-    for file_path in [os.path.join(dir_path, fn) for fn in next(os.walk(dir_path))[2] if (".csv" in os.path.splitext(fn)[-1])]:
+    for file_path in [  os.path.join(dir_path, fn) for fn in next(os.walk(dir_path))[2] if (".csv" in os.path.splitext(fn)[-1])]:
         dataset_tuple += (traffic_csv_converter(file_path),)  ################
 
     return np.concatenate(dataset_tuple, axis=0)
@@ -158,7 +158,7 @@ def iterate_all_classes():
         if "other" not in class_dir: #"browsing" not in class_dir and
             print("working on " + class_dir)
             dataset = traffic_class_converter(class_dir)
-            print(dataset.shape)
+            print(f" dataset shape: {dataset.shape}")
             export_class_dataset(dataset, class_dir)
 
 
@@ -184,13 +184,14 @@ if __name__ == '__main__':
 
     FLAGS = parser.parse_args()
     ##
-    # iterate_all_classes()
+    iterate_all_classes()
+    assert False
 
     # dataset = traffic_class_converter(INPUT_DIR)
     # dataset = traffic_csv_converter(INPUT)
 
-    input_array = "../raw_csvs/classes/browsing/reg/browsing_reg.npy"
-    random_sampling_dataset(input_array)
+    # input_array = "../raw_csvs/classes/browsing/reg/browsing_reg.npy"
+    # random_sampling_dataset(input_array)
 
 
     # export_class_dataset(dataset)

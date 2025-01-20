@@ -7,22 +7,31 @@ import glob
 import numpy as np
 # from sklearn.cross_validation import train_test_split
 from sklearn.model_selection import train_test_split
+from pprint import pprint as pp  
 
 CLASS = "browsing"
+CLASS = "file_transfer"
 TEST_SIZE = 0.1
 DATASET_DIR = "../datasets/"
 
+# VPN_TYPES = {
+#     "reg": glob.glob("../raw_csvs/classes/**/reg/*.npy"),
+#     "vpn": glob.glob("../raw_csvs/classes/**/vpn/*.npy"),
+#     "tor": glob.glob("../raw_csvs/classes/**/tor/*.npy")
+# }
 VPN_TYPES = {
-    "reg": glob.glob("../raw_csvs/classes/**/reg/*.npy"),
-    "vpn": glob.glob("../raw_csvs/classes/**/vpn/*.npy"),
-    "tor": glob.glob("../raw_csvs/classes/**/tor/*.npy")
+    "reg": glob.glob("../data/classes_csvs/**/reg/*.npy"),
+    "vpn": glob.glob("../data/classes_csvs/**/vpn/*.npy"),
+    "tor": glob.glob("../data/classes_csvs/**/tor/*.npy")
 }
+pp(VPN_TYPES)
+# assert False
 
 
 def import_array(input_array):
     print("Import dataset " + input_array)
     dataset = np.load(input_array)
-    print(dataset.shape)
+    print(f"dataset shape:{dataset.shape}")
     return dataset
 
 
@@ -35,21 +44,21 @@ def export_dataset(dataset_dict, file_path):
 
 def create_class_vs_all_specific_vpn_type_dataset(class_name, vpn_type="reg", validation=False, ratio=1.2):
     class_array_file = [fn for fn in VPN_TYPES[vpn_type] if class_name in fn and "overlap" not in fn][0]
-    print(class_array_file)
+    print(f" class_array_file:{class_array_file}")
     all_files = [fn for fn in VPN_TYPES[vpn_type] if class_name not in fn and "overlap" not in fn]
-    print(all_files)
+    print(f"all other files:{all_files}")
 
     class_array = import_array(class_array_file)
     count = len(class_array)
-    print(count)
+    print(f"data count in class_array:{count}")
 
     all_count = len(all_files)
     count_per_class = ratio*count/all_count
-    print(count_per_class)
+    print(f"count per class:{count_per_class}")
 
-    for fn in all_files:
-        print(fn)
-        fn_array = import_array(fn)
+    for filename in all_files:
+        print(f "filename:{filename}")
+        fn_array = import_array(filename)
         p = count_per_class*1.0/len(fn_array)
         print(p)
         if p < 1:
@@ -82,6 +91,6 @@ def create_class_vs_all_specific_vpn_type_dataset(class_name, vpn_type="reg", va
 
 
 if __name__ == '__main__':
-    # create_class_vs_all_specific_vpn_type_dataset(CLASS, validation=True)
-    # create_class_vs_all_specific_vpn_type_dataset(CLASS, vpn_type="vpn", validation=False)
+    create_class_vs_all_specific_vpn_type_dataset(CLASS, validation=True)
+    create_class_vs_all_specific_vpn_type_dataset(CLASS, vpn_type="vpn", validation=False)
     create_class_vs_all_specific_vpn_type_dataset(CLASS, vpn_type="tor", validation=False)

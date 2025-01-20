@@ -1,0 +1,7 @@
+matplotlib
+keras
+scikit-learn
+tensorflow
+notebook
+ipykernel
+jupyterlab
